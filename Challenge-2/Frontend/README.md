@@ -1,6 +1,6 @@
 # Frontend Developer Test
 ## Project
-1. Build a small web app using the Ron Swanson Database API (https://icanhazdadjoke.com/api).
+1. Build a small web app using the dad jokes Database API (https://icanhazdadjoke.com/api).
 
 ### Minimum viable product
 When first loaded, the user should see a list of jokes (see https://icanhazdadjoke.com/api). A user can click on "new joke" and a new joke will appear.
