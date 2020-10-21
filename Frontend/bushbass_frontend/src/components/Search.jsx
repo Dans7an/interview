@@ -1,51 +1,44 @@
-import React, { useState, useEffect } from 'react';
-import Card from './Card';
-import './home.css';
+import React, { useState, useEffect, useContext } from 'react';
+import UserContext from '../context/UserContext';
+import { useHistory, Link } from 'react-router-dom';
+import './favorites.css';
 import './search.css';
 
-const Search = ({ movieList }) => {
+function Favorites() {
   const [inputText, setInputText] = useState('');
-  const [filteredList, setFilteredList] = useState([]);
+  const { userData } = useContext(UserContext);
+  const [searchResults, setSearchResults] = useState([]);
+  const history = useHistory();
 
-  useEffect(
-    () =>
-      setFilteredList(
-        movieList.filter((movie) =>
-          movie.title.toLowerCase().includes(inputText.toLowerCase())
-        )
-      ),
-    [movieList, inputText]
-  );
+  const submitForm = (e) => {
+    e.preventDefault();
+    fetch(
+      `https://api.themoviedb.org/3/search/movie?api_key=dff2ace9d4fe143fc9aad06522638b5c&language=en-US&query=${inputText}&page=1&include_adult=false`
+    ).then((res) => res.json().then((data) => setSearchResults(data.results)));
+  };
+  useEffect(() => {
+    if (!userData.user) history.push('/login');
+  });
 
   return (
-    <main className='search-main'>
-      <div className='search-area'>
-        <h2>Search within the top 20</h2>
-        <div>
-          <input
-            type='text'
-            value={inputText}
-            onChange={(Event) => setInputText(Event.target.value)}
-          />
+    <div className='search-page'>
+      <h2>Search</h2>
+      <form className='search-form' onSubmit={submitForm}>
+        <input
+          type='text'
+          value={inputText}
+          onChange={(Event) => setInputText(Event.target.value)}
+        />
+        <button className='search-button'>Submit</button>
+      </form>
+
+      {searchResults.map((movie) => (
+        <div key={movie.id}>
+          <Link to={`/${movie.id}`}>{movie.original_title}</Link>
         </div>
-      </div>
-      <div className='card-display-area'>
-        {filteredList.length < 1 && <h2>No movies match your search</h2>}
-        {filteredList.map(
-          ({ id, title, overview, vote_average, popularity, poster_path }) => (
-            <Card
-              key={id}
-              title={title}
-              overview={overview}
-              vote_average={vote_average}
-              popularity={popularity}
-              id={id}
-              poster_path={poster_path}
-            />
-          )
-        )}
-      </div>
-    </main>
+      ))}
+    </div>
   );
-};
-export default Search;
+}
+
+export default Favorites;

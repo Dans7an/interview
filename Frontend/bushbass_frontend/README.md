@@ -5,7 +5,6 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 To run it -
 
 1. clone and enter the directory
-1. checkout branch 'bushbass-frontend'
 1. npm install
 1. npm start
 1. browser will open on port 3000

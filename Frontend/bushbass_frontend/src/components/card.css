@@ -1,7 +1,7 @@
 .card {
   box-shadow: 0 0 30px rgba(255, 0, 34, 0.452);
   margin: 16px;
-  padding: 6px;
+  padding: 5px;
   border-radius: 6px;
   width: 43%;
   text-align: center;
@@ -10,4 +10,16 @@
 .card img {
   width: 70%;
   border-radius: 10px;
+}
+
+.addFavoriteButton {
+  border: 1px solid black;
+  border-radius: 2px;
+  padding: 5px;
+  margin-bottom: 18px;
+}
+@media screen and (max-width: 415px) {
+  .card {
+    width: 90%;
+  }
 }

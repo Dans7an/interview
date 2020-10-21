@@ -1,9 +1,10 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 
 import './header.css';
+
 import netflixN from './netflixN.png';
 import netflixNoN from './netflixLogo-noN.png';
+import AuthOptions from './auth/AuthOptions';
 function Header() {
   return (
     <header>
@@ -15,15 +16,11 @@ function Header() {
       <h1>Find your favorite movies</h1>
       <p className='not-netflix'>
         **Totally not a ripoff of Netflix, in fact we've never even heard of
-        Netlfix
+        Netflix
       </p>
       <nav>
-        <div className='nav-item'>
-          <Link to='/'>Home</Link>
-        </div>
-        <div className='search'>
-          <Link to='/search'>Search</Link>
-        </div>
+       
+        <AuthOptions />
       </nav>
     </header>
   );

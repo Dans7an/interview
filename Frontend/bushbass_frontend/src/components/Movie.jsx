@@ -1,9 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
+import Axios from 'axios';
+import UserContext from '../context/UserContext';
+
 import './movie.css';
 
 function Movie() {
+  const { BACKEND_URL } = useContext(UserContext);
+
   const [currentMovie, setCurrentMovie] = useState({});
+  const [favorites, setFavorites] = useState([]);
+  const [renderToggle, setRenderToggle] = useState(true);
+
   let { id } = useParams();
   let connectionString = `https://api.themoviedb.org/3/movie/${id}?api_key=dff2ace9d4fe143fc9aad06522638b5c`;
 
@@ -12,6 +20,42 @@ function Movie() {
       .then((response) => response.json())
       .then((data) => setCurrentMovie(data));
   }, [connectionString]);
+
+  useEffect(() => {
+    async function fetchData() {
+      const token = localStorage.getItem('auth-token');
+      const getAllResponse = await Axios.get(`${BACKEND_URL}/favorites`, {
+        headers: {
+          'x-auth-token': token,
+        },
+      });
+
+      setFavorites(getAllResponse.data);
+    }
+    fetchData();
+  }, [BACKEND_URL, renderToggle]); // Or [] if effect doesn't need props or state
+
+  const addFavorite = async (id) => {
+    try {
+      const token = localStorage.getItem('auth-token');
+      const addFavoriteResponse = await Axios.post(
+        `${BACKEND_URL}/favorites`,
+        {
+          movieId: id,
+          movieTitle: currentMovie.title,
+        },
+        {
+          headers: {
+            'x-auth-token': token,
+          },
+        }
+      );
+      console.log(addFavoriteResponse);
+      setRenderToggle(!renderToggle);
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
 
   return (
     <div className='single-movie-card-container'>
@@ -33,9 +77,19 @@ function Movie() {
         </div>
         <div className='single-movie-overview-container'>
           <p className='single-movie-overview'>{currentMovie.overview}</p>
-          <p className='single-movie-overview'>
-            Average User Score: {currentMovie.vote_average}
-          </p>
+
+          {favorites.some(
+            (fave) => fave.movieId === currentMovie.id.toString()
+          ) ? (
+            <button className='addFavoriteButton'>Already in favorites</button>
+          ) : (
+            <button
+              className='addFavoriteButton'
+              onClick={() => addFavorite(id, currentMovie.title)}
+            >
+              Add to favorites{' '}
+            </button>
+          )}
         </div>
       </div>
     </div>
